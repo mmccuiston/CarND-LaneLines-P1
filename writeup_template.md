@@ -1,47 +1,38 @@
 # **Finding Lane Lines on the Road** 
 
-## Writeup Template
+## Reflection
 
-### You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
+### My Lane Detection Pipeline
 
----
+First I convert the original image to grayscale.  
 
-**Finding Lane Lines on the Road**
+[image1]: ./writeup/gray.jpg "Grayscale"
 
-The goals / steps of this project are the following:
-* Make a pipeline that finds lane lines on the road
-* Reflect on your work in a written report
+Next I blur the image using a gaussian blur in order to remove noise and spurious edges. 
 
+[image2]: ./writeup/blurred.jpg "Blurred"
 
-[//]: # (Image References)
+Next I apply the Canny edge detector to find edges in the image. 
 
-[image1]: ./examples/grayscale.jpg "Grayscale"
+[image3]: ./writeup/edges.jpg "Edges"
 
----
+Next I remove parts of the image that are unlikely to contain lane markings using an image mask.  The image mask I chose to use is trapezoidal in shape.
 
-### Reflection
+[image4]: ./writeup/masked.jpg "Masked"
 
-### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
+Then I apply a hough transformation to detect lines in the image.  I attempt to group the detected line segments by right and left lane by using their slope.  Line segments with a positive slope are considered to be part of the right lane markings and negative slope are considered to be part of the left lane.  Horizontal lines are filtered out.  Once the line segments are grouped by their lane (left or right) they are combined together by taking the RANSAC fit of their endpoints.  This was done in an attempt to filter outliers.  Originally I tried a linear regression of the endpoints, but found the line to jump significantly between frames due to outliers.
 
-My pipeline consisted of 5 steps. First, I converted the images to grayscale, then I .... 
+[image5]: ./writeup/lines.jpg "Lines"
 
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function by ...
+Finally I overlay the output of the previous Hough tranformation with the original image.
 
-If you'd like to include images to show how the pipeline works, here is how to include an image: 
-
-![alt text][image1]
+[image6]: ./writeup/final.jpg "Final Overlay"
 
 
-### 2. Identify potential shortcomings with your current pipeline
+### Pipeline Shortcomings
+Sometimes lines are detected that are not lane markings, but still appear in the masked region.  In the challenge video this happens frequently due to the visibility of the hood as well as the guard rail.  Since there is currently nothing that filters out these lines they contribute to the RANSAC fit and distort the lane lines. 
 
+### Possible Improvements
 
-One potential shortcoming would be what would happen when ... 
+Some possible improvements might include better filtering of lines that are not lane markings.  One possible filter might be to only include lines that have a slope within a certain range.  Currently only horizontal (zero slope) is being filtered out.  Another possible improvement might be to reduce the mask area to include less of the periphery.  This might come at the cost of legitimate detections though so that must be considered.  
 
-Another shortcoming could be ...
-
-
-### 3. Suggest possible improvements to your pipeline
-
-A possible improvement would be to ...
-
-Another potential improvement could be to ...
