@@ -1,5 +1,5 @@
-#**Finding Lane Lines on the Road** 
-# Running the code
+# Finding Lane Lines on the Road
+## Running the code
 
 1. Install and activate the [CarND Term1 Starter Kit].(https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md)
 
@@ -11,7 +11,7 @@
 
 4. From the dropdown menu Kernel > Restart & Run All.
 
-# Writeup
+## Writeup
 
 My writeup for this project can be found [here].(./writeup_template.md) 
 
